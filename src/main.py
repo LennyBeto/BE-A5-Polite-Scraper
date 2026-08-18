@@ -1,3 +1,6 @@
+import json
+from discover import discover_book_urls
+from extract import extract_book
 from fetch import fetch
 from discover import discover_book_urls
 
@@ -11,6 +14,15 @@ if __name__ == "__main__":
 def main():
     pairs = discover_book_urls()
     print(f"First: {pairs[0] if pairs else 'none found'}")
+
+if __name__ == "__main__":
+    main()
+
+def main():
+    pairs = discover_book_urls()
+    records = [extract_book(url, source_page=source) for url, source in pairs]
+    print(json.dumps(records[0], indent=2))
+    print(f"detail_pages={len(records)}")
 
 if __name__ == "__main__":
     main()
