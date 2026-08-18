@@ -1,5 +1,7 @@
 import time
 from pathlib import Path
+import hashlib
+from urllib.parse import urlparse
 import requests
 
 USER_AGENT = "FlyRankInternshipA9/1.0 (+https://github.com/LennyBeto/BE-A5-Polite-Scraper)"
@@ -56,3 +58,17 @@ def fetch(url: str, _retry: bool = True) -> str:
     time.sleep(0.5)
 
     return html
+
+
+def _cache_path(url: str) -> Path:
+    """Return a safe cache file path for the given URL.
+
+    Uses a hex sha256 of the URL as filename with the netloc as a prefix to
+    make files easier to inspect.
+    """
+    parsed = urlparse(url)
+    # create a short prefix from the netloc (domain)
+    prefix = parsed.netloc.replace(":", "_") or "unknown"
+    digest = hashlib.sha256(url.encode("utf-8")).hexdigest()
+    filename = f"{prefix}-{digest}.html"
+    return CACHE_DIR / filename
